@@ -324,6 +324,10 @@ table {
         .btn-print { background: #2563eb; }
         .btn-reset { background: #64748b; }
 
+        .calc-layout .card:nth-child(2) .result-row input {
+            max-width: 120px;
+        }
+
         @media (max-width: 900px) {
             .calc-layout { grid-template-columns: 1fr; }
         }
@@ -848,8 +852,8 @@ table {
             </table>
 
             <div class="button-area">
-                <button class="btn btn-print" onclick="printSettlement()">출력하기</button>
-                <button class="btn btn-reset" onclick="confirmResetForm()">초기화</button>
+                <button type="button" class="btn btn-print" onclick="printSettlement()">출력하기</button>
+                <button type="button" class="btn btn-reset" onclick="confirmResetForm()">초기화</button>
             </div>
         </div>
     </div>
