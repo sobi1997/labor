@@ -3,20 +3,21 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>퇴직금 계산기 (2026년)</title>
+    <title>퇴직금 계산기</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Malgun Gothic', sans-serif; }
         body { background-color: #f4f6f9; padding: 30px; color: #333; }
         
-        .wrapper { max-width: 1050px; margin: 0 auto; background: white; border: 1px solid #cfd8dc; box-shadow: 0 4px 12px rgba(0,0,0,0.05); }
-        .header { background-color: #0d47a1; color: white; padding: 18px 24px; font-size: 20px; font-weight: bold; }
+        .wrapper { max-width: 1100px; margin: 0 auto; background: white; border: 1px solid #cfd8dc; box-shadow: 0 4px 12px rgba(0,0,0,0.05); }
+        .header { background-color: #0d47a1; color: white; padding: 18px 24px; font-size: 20px; font-weight: bold; display: flex; justify-content: space-between; align-items: center; }
         .content-body { padding: 30px; }
         
         .group-title { font-size: 15px; font-weight: bold; color: #0d47a1; margin-bottom: 12px; display: flex; align-items: center; gap: 8px; }
         .group-title span { background: #0d47a1; color: white; border-radius: 50%; width: 20px; height: 20px; display: inline-flex; align-items: center; justify-content: center; font-size: 12px; }
 
         .info-toggle-bar { background: #f8fafc; padding: 12px 20px; border: 1px solid #cbd5e1; border-radius: 4px; margin-bottom: 15px; display: flex; align-items: center; gap: 10px; font-weight: bold; color: #1e40af; }
+        
         #workerInfoArea { display: none; background: #fafafa; border: 1px solid #e0e0e0; padding: 25px; margin-bottom: 25px; border-radius: 4px; }
         .info-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 15px 25px; }
         .info-item { display: flex; align-items: center; gap: 10px; font-size: 14px; }
@@ -26,32 +27,40 @@
         .input-row-container { display: grid; grid-template-columns: 1fr 1fr; gap: 15px 25px; background: #fafafa; padding: 20px; border: 1px solid #e0e0e0; margin-bottom: 15px; }
         .input-group { display: flex; align-items: center; font-size: 14px; gap: 4px; }
         .input-group label { width: 110px; font-weight: bold; color: #455a64; margin-right: 4px; }
-        .input-group .date-combo { padding: 6px 8px; border: 1px solid #ccc; font-size: 14px; width: 85px; border-radius: 3px; }
+        .input-group .date-combo { padding: 6px 8px; border: 1px solid #ccc; font-size: 14px; min-width: 85px; width: 85px; border-radius: 3px; color: #333; }
         
         .sync-locked { background-color: #e0f2fe !important; border: 1px solid #bae6fd !important; pointer-events: none; }
         .sync-unlocked { background-color: #fffde7 !important; border: 1px solid #ffd54f !important; }
 
         .exclusion-bar { display: flex; align-items: center; background: #f1f5f9; padding: 14px 20px; font-size: 14px; margin-bottom: 25px; border: 1px solid #cbd5e1; border-radius: 4px; gap: 40px; }
+        .exclusion-summary { color: #dc2626; font-weight: bold; font-size: 15px; }
         .calc-days-summary { color: #2563eb; font-weight: bold; font-size: 16px; background: #eff6ff; padding: 2px 10px; border: 1px solid #bfdbfe; border-radius: 4px; }
 
+        .table-toolbar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
         .mode-select-area { display: flex; align-items: center; gap: 6px; font-size: 13px; font-weight: bold; color: #e65100; background: #fff3e0; padding: 6px 12px; border: 1px solid #ffe0b2; border-radius: 4px; }
         
         table { width: 100%; border-collapse: collapse; margin-bottom: 25px; font-size: 13px; text-align: center; }
         th { background-color: #f8fafc; border: 1px solid #cbd5e1; padding: 12px; font-weight: bold; color: #1e293b; }
         td { border: 1px solid #cbd5e1; padding: 10px; background: white; }
-        td input.base-wage, td input.etc-wage { width: 85%; padding: 6px; text-align: right; border: 1px solid #ccc; border-radius: 3px; font-size: 13px; }
+        
+        .date-split-container { display: flex; align-items: center; justify-content: center; gap: 5px; }
+        .date-split-container input[type="text"], td input.period-days-field { width: 110px; text-align: center; padding: 6px; border-radius: 3px; font-size: 13px; }
+        td input.period-days-field { width: 50px; }
+        td input.base-wage, td input.etc-wage { width: 85%; padding: 6px; text-align: right; border: 1px solid #ccc; font-size: 13px; }
 
         .bottom-flex-layout { display: grid; grid-template-columns: 1fr 1fr; gap: 25px; margin-top: 15px; border-top: 2px solid #0d47a1; padding-top: 25px; }
-        .result-row { display: flex; align-items: center; height: 35px; gap: 6px; margin-bottom: 12px; }
-        .result-row label { width: 140px; font-weight: bold; color: #475569; }
-        .result-row input { padding: 8px; border: 1px solid #cbd5e1; text-align: right; width: 180px; border-radius: 3px; }
+        .result-column { display: flex; flex-direction: column; gap: 12px; }
+        
+        .result-row { display: flex; align-items: center; height: 35px; }
+        .result-row label { width: 140px; font-weight: bold; font-size: 14px; color: #475569; }
+        .result-row input { padding: 8px; border: 1px solid #cbd5e1; text-align: right; width: 180px; font-size: 14px; color: #333; border-radius: 3px; }
         
         .manual-read-only { background-color: #edf2f7 !important; outline: none; }
-        .final-box { background: #eff6ff; border: 2px solid #2563eb; padding: 18px 20px; border-radius: 6px; display: flex; justify-content: space-between; align-items: center; margin-top: 5px; height: 35px; }
+        .final-box { background: #eff6ff; border: 2px solid #2563eb; padding: 20px; border-radius: 6px; display: flex; justify-content: space-between; align-items: center; margin-top: 5px; height: 35px; }
         .final-box label { font-size: 16px; color: #1e40af; font-weight: bold; }
         .final-box input { font-size: 20px; color: #1e40af; font-weight: bold; border: none; background: transparent; text-align: right; width: 220px; outline: none; }
 
-        .button-area { display: flex; justify-content: center; gap: 12px; margin-top: 35px; border-top: 1px solid #e2e8f0; padding-top: 25px; }
+        .action-buttons { display: flex; gap: 15px; margin-top: 35px; justify-content: center; border-top: 1px solid #e2e8f0; padding-top: 25px; }
         .btn-action { padding: 14px 40px; border: none; color: white; font-weight: bold; cursor: pointer; font-size: 16px; border-radius: 4px; }
         .btn-calc { background-color: #2563eb; }
         .btn-reset { background-color: #64748b; }
@@ -60,21 +69,10 @@
         .modal-box { background: white; width: 560px; border-radius: 6px; overflow: hidden; box-shadow: 0 10px 25px rgba(0,0,0,0.2); }
         .modal-header { background: #f8fafc; padding: 15px; font-size: 15px; font-weight: bold; text-align: center; border-bottom: 1px solid #e2e8f0; display: flex; justify-content: space-between; align-items: center; }
         .modal-body { padding: 20px; }
-        .modal-toolbar { display: flex; justify-content: flex-end; margin-bottom: 12px; }
         .btn-blue-sm { background-color: #1565c0; color: white; border: none; padding: 6px 14px; font-size: 12px; cursor: pointer; font-weight: bold; border-radius: 2px; }
         .btn-row-del { background: none; border: none; color: #ef4444; font-size: 18px; font-weight: bold; cursor: pointer; }
-        .modal-footer { text-align: center; padding: 15px; background: #f8fafc; border-top: 1px solid #e2e8f0; }
         .btn-modal-confirm { background: #0d47a1; color: white; border: none; border-radius: 20px; padding: 10px 50px; font-weight: bold; cursor: pointer; }
         .custom-flatpickr-input { width: 100%; padding: 6px; font-size: 13px; text-align: center; border: 1px solid #ccc; font-weight: bold; background-color: #fffde7; cursor: pointer; }
-        
-        @media print {
-            body { background: #fff; padding: 0; }
-            .wrapper { display: none; }
-            .print-sheet { display: block !important; width: 190mm; margin: 0 auto; }
-            .print-title { text-align: center; font-size: 21px; font-weight: bold; margin: 6mm 0 7mm 0; }
-            table { width: 100%; border-collapse: collapse; margin-bottom: 5mm; }
-            th, td { border: 1px solid #9ca3af; padding: 5px 6px; }
-        }
     </style>
 </head>
 <body>
@@ -94,27 +92,70 @@
                 </div>
             </div>
 
+            <div class="table-toolbar">
+                <div class="group-title"><span>1</span> 재직기간 날짜 설정</div>
+                <div class="mode-select-area">
+                    <input type="checkbox" id="midCalcChk" onchange="toggleMidCalcMode()">
+                    <label for="midCalcChk" style="cursor:pointer;">퇴직금 중도정산 활성화</label>
+                </div>
+            </div>
+
             <div class="input-row-container">
-                <div class="input-group"><label>입사일자</label><input type="text" id="joinYear" class="date-combo" onchange="syncDateToInputs()">년 <input type="text" id="joinMonth" class="date-combo" onchange="syncDateToInputs()">월 <input type="text" id="joinDay" class="date-combo" onchange="syncDateToInputs()">일</div>
-                <div class="input-group"><label>퇴직일자</label><input type="text" id="leaveYear" class="date-combo" onchange="syncDateToInputs()">년 <input type="text" id="leaveMonth" class="date-combo" onchange="syncDateToInputs()">월 <input type="text" id="leaveDay" class="date-combo" onchange="syncDateToInputs()">일</div>
+                <div class="input-group">
+                    <label>입사일자</label>
+                    <input type="text" id="joinYear" class="date-combo" onchange="syncDateToInputs()"> 년
+                    <input type="text" id="joinMonth" class="date-combo" onchange="syncDateToInputs()"> 월
+                    <input type="text" id="joinDay" class="date-combo" onchange="syncDateToInputs()"> 일
+                </div>
+                <div class="input-group">
+                    <label>퇴직일자</label>
+                    <input type="text" id="leaveYear" class="date-combo" onchange="syncDateToInputs()"> 년
+                    <input type="text" id="leaveMonth" class="date-combo" onchange="syncDateToInputs()"> 월
+                    <input type="text" id="leaveDay" class="date-combo" onchange="syncDateToInputs()"> 일
+                </div>
+                <div class="input-group">
+                    <label style="color:#1e40af;">퇴직금 기산일자</label>
+                    <input type="text" id="calcStartYear" class="date-combo sync-locked" onchange="updateAllCalculations()"> 년
+                    <input type="text" id="calcStartMonth" class="date-combo sync-locked" onchange="updateAllCalculations()"> 월
+                    <input type="text" id="calcStartDay" class="date-combo sync-locked" onchange="updateAllCalculations()"> 일
+                </div>
+                <div class="input-group">
+                    <label style="color:#1e40af;">퇴직금 산정일자</label>
+                    <input type="text" id="calcEndYear" class="date-combo sync-locked" onchange="updateAllCalculations()"> 년
+                    <input type="text" id="calcEndMonth" class="date-combo sync-locked" onchange="updateAllCalculations()"> 월
+                    <input type="text" id="calcEndDay" class="date-combo sync-locked" onchange="updateAllCalculations()"> 일
+                </div>
             </div>
 
             <div class="exclusion-bar">
-                <div>• 퇴직금 산정일수 : <span id="finalWorkDaysSummary" class="calc-days-summary">0 일</span></div>
-                <button onclick="openModal()">제외일자 등록</button>
+                <div class="dashboard-item">• 평균임금 산정 제외기간 : <span id="unincludedSummary" class="exclusion-summary">0 일 제외됨</span> <button class="btn-blue-sm" onclick="openModal()">설정</button></div>
+                <div class="dashboard-item">• 퇴직금 산정일수 : <span id="finalWorkDaysSummary" class="calc-days-summary">0 일</span></div>
             </div>
 
-            <table id="wageTable">
+            <div class="table-toolbar">
+                <div class="group-title"><span>2</span> 퇴직 전 3개월간 임금 총액 계산</div>
+                <div class="mode-select-area">
+                    <input type="checkbox" id="manualModeChk" onchange="toggleManualMode()">
+                    <label style="cursor:pointer;" for="manualModeChk">산정기간 직접입력</label>
+                </div>
+            </div>
+
+            <table>
                 <thead><tr><th>산정 기간</th><th>기간별 일수</th><th>기본급</th><th>기타수당</th></tr></thead>
                 <tbody id="wageTableBody"></tbody>
             </table>
 
+            <div class="group-title"><span>3</span> 수당 가산액 및 최종 결과</div>
             <div class="bottom-flex-layout">
                 <div class="result-column">
-                    <div class="result-row"><label>연간 상여금</label><input type="text" id="annualBonus" value="0" oninput="formatAndCalcWages(this)"> 원</div>
+                    <div class="result-row"><label>연간 상여금 총액</label><input type="text" id="annualBonus" value="0" oninput="formatAndCalcWages(this)"> 원</div>
                     <div class="result-row"><label>연차수당</label><input type="text" id="annualLeaveWage" value="0" oninput="formatAndCalcWages(this)"> 원</div>
+                    <div class="result-row"><label>임금총액</label><input type="text" id="totalWageSum" value="0" readonly class="manual-read-only"> 원</div>
                 </div>
                 <div class="result-column">
+                    <div class="result-row"><label>1일 평균임금</label><input type="text" id="avgWagePerDay" value="0" readonly class="manual-read-only"> 원</div>
+                    <div class="result-row"><label>1일 통상임금</label><input type="text" id="normalWagePerDay" value="0" oninput="formatAndCalcSeverance(this)"> 원</div>
+                    <div class="result-row"><label>퇴직위로금 등</label><input type="text" id="severanceConsolationPay" value="0" oninput="formatAndCalcSeverance(this)"> 원</div>
                     <div class="final-box"><label>최종 계산 퇴직금</label><input type="text" id="finalSeverance" value="0" readonly> 원</div>
                 </div>
             </div>
@@ -126,21 +167,24 @@
         </div>
     </div>
 
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr/dist/l10n/ko.js"></script>
     <script>
+        // 초기화 함수 적용
         function resetForm() {
             if (confirm("입력 정보를 초기화하시겠습니까?")) {
                 document.querySelectorAll('input').forEach(input => {
                     if (input.type === 'checkbox') input.checked = false;
-                    else if (!input.classList.contains('readonly')) {
+                    else if (!input.classList.contains('readonly') && !input.readOnly) {
                         input.value = (input.id.includes('Pay') || input.id.includes('Bonus') || input.id.includes('Wage')) ? '0' : '';
                     }
                 });
                 const tbody = document.getElementById('wageTableBody');
                 if (tbody) tbody.innerHTML = '';
-                // 재계산 로직 추가 필요 시 호출
+                // 재계산 로직 추가 시 호출
             }
         }
-        // 나머지 모든 함수와 기능들(calculateAll, initCalendar 등)은 기존과 동일하게 유지됩니다.
+        // ... (기존 calculateAll 등 핵심 로직 모두 포함되어 있어야 함)
     </script>
 </body>
 </html>
