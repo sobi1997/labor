@@ -19,24 +19,10 @@
             position: relative;
         }
 
-        /* 🧪 상단 테스트 중 배지 스킨 추가 */
-        .test-badge {
-            position: absolute;
-            top: 15px;
-            right: 15px;
-            background-color: #e2e8f0;
-            color: #475569;
-            font-size: 11px;
-            font-weight: bold;
-            padding: 4px 8px;
-            border-radius: 4px;
-            border: 1px solid #cbd5e1;
-        }
-
         .launcher-header {
             background-color: #0d47a1;
             color: #fff;
-            padding: 30px 24px 24px 24px;
+            padding: 35px 24px 28px 24px;
             text-align: center;
         }
 
@@ -108,30 +94,17 @@
             color: #2563eb;
         }
 
-        /* ✒️ 하단 패널 및 크레딧 마감 */
+        /* ✒️ 하단 마감부 슬림화 및 크레딧 톤다운 개조 */
         .footer-logo {
-            text-align: center;
-            font-size: 12px;
-            color: #94a3b8;
-            margin-top: 30px;
+            text-align: right;
+            margin-top: 25px;
             border-top: 1px dashed #e2e8f0;
             padding-top: 15px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .footer-logo .firm-name {
-            font-weight: bold;
-            color: #64748b;
         }
 
         .footer-logo .maker-credit {
             font-size: 11px;
-            color: #cbd5e1;
-            background: #475569;
-            padding: 2px 6px;
-            border-radius: 3px;
+            color: #94a3b8; /* 눈에 띄지 않는 차분한 회색 */
             font-weight: normal;
         }
     </style>
@@ -139,7 +112,6 @@
 <body>
 
     <div class="container">
-        <div class="test-badge">사내 테스트 버전</div>
 
         <div class="launcher-header">
             <h1>노무 관리 계산기 모음</h1>
@@ -154,7 +126,7 @@
                     퇴직금 계산기 바로가기
                 </a>
 
-                <a href="퇴사자4대보험정산.html" class="btn-nav">
+                <a href="퇴사자 4대보험정산.html" class="btn-nav">
                     퇴사자 4대보험 정산 바로가기
                 </a>
 
@@ -164,8 +136,7 @@
             </div>
 
             <div class="footer-logo">
-                <span class="firm-name">노무법인 두웰</span>
-                <span class="maker-credit">Made by 전형섭</span>
+                <span class="maker-credit">made by 전형섭</span>
             </div>
         </div>
     </div>
