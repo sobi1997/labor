@@ -490,6 +490,8 @@
 
                 <button class="btn-action btn-calc" onclick="printSeveranceStatement()">출력하기</button>
 
+                <button class="btn-action btn-calc" onclick="confirmResetInputs()">초기화</button>
+
             </div>
 
         </div>
@@ -2059,6 +2061,19 @@
             }, 500);
 
         }
+
+
+        function confirmResetInputs() {
+
+            if (confirm("입력 정보를 초기화하시겠습니까?")) {
+
+                location.reload();
+
+            }
+
+        }
+
+
 
 
 
