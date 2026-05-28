@@ -17,6 +17,7 @@
         .group-title span { background: #0d47a1; color: white; border-radius: 50%; width: 20px; height: 20px; display: inline-flex; align-items: center; justify-content: center; font-size: 12px; }
 
         .info-toggle-bar { background: #f8fafc; padding: 12px 20px; border: 1px solid #cbd5e1; border-radius: 4px; margin-bottom: 15px; display: flex; align-items: center; gap: 10px; font-weight: bold; color: #1e40af; }
+        
         #workerInfoArea { display: none; background: #fafafa; border: 1px solid #e0e0e0; padding: 25px; margin-bottom: 25px; border-radius: 4px; }
         .info-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 15px 25px; }
         .info-item { display: flex; align-items: center; gap: 10px; font-size: 14px; }
@@ -26,7 +27,7 @@
         .input-row-container { display: grid; grid-template-columns: 1fr 1fr; gap: 15px 25px; background: #fafafa; padding: 20px; border: 1px solid #e0e0e0; margin-bottom: 15px; }
         .input-group { display: flex; align-items: center; font-size: 14px; gap: 4px; }
         .input-group label { width: 110px; font-weight: bold; color: #455a64; margin-right: 4px; }
-        .input-group .date-combo { padding: 6px 8px; border: 1px solid #ccc; font-size: 14px; min-width: 85px; width: 85px; border-radius: 3px; }
+        .input-group .date-combo { padding: 6px 8px; border: 1px solid #ccc; font-size: 14px; width: 85px; border-radius: 3px; }
         
         .sync-locked { background-color: #e0f2fe !important; border: 1px solid #bae6fd !important; pointer-events: none; }
         .sync-unlocked { background-color: #fffde7 !important; border: 1px solid #ffd54f !important; }
@@ -40,7 +41,8 @@
         table { width: 100%; border-collapse: collapse; margin-bottom: 25px; font-size: 13px; text-align: center; }
         th { background-color: #f8fafc; border: 1px solid #cbd5e1; padding: 12px; font-weight: bold; color: #1e293b; }
         td { border: 1px solid #cbd5e1; padding: 10px; background: white; }
-        
+        td input.base-wage, td input.etc-wage { width: 85%; padding: 6px; text-align: right; border: 1px solid #ccc; border-radius: 3px; font-size: 13px; }
+
         .bottom-flex-layout { display: grid; grid-template-columns: 1fr 1fr; gap: 25px; margin-top: 15px; border-top: 2px solid #0d47a1; padding-top: 25px; }
         .result-column { display: flex; flex-direction: column; gap: 12px; }
         
@@ -56,6 +58,15 @@
         .btn-action { padding: 14px 40px; border: none; color: white; font-weight: bold; cursor: pointer; font-size: 16px; border-radius: 4px; }
         .btn-calc { background-color: #2563eb; }
         .btn-reset { background-color: #64748b; }
+        
+        .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.4); z-index: 999; justify-content: center; align-items: center; }
+        .modal-box { background: white; width: 560px; border-radius: 6px; overflow: hidden; box-shadow: 0 10px 25px rgba(0,0,0,0.2); }
+        .modal-header { background: #f8fafc; padding: 15px; font-size: 15px; font-weight: bold; text-align: center; border-bottom: 1px solid #e2e8f0; display: flex; justify-content: space-between; align-items: center; }
+        .modal-body { padding: 20px; }
+        .btn-blue-sm { background-color: #1565c0; color: white; border: none; padding: 6px 14px; font-size: 12px; cursor: pointer; font-weight: bold; border-radius: 2px; }
+        .btn-row-del { background: none; border: none; color: #ef4444; font-size: 18px; font-weight: bold; cursor: pointer; }
+        .btn-modal-confirm { background: #0d47a1; color: white; border: none; border-radius: 20px; padding: 10px 50px; font-weight: bold; cursor: pointer; }
+        .custom-flatpickr-input { width: 100%; padding: 6px; font-size: 13px; text-align: center; border: 1px solid #ccc; font-weight: bold; background-color: #fffde7; cursor: pointer; }
     </style>
 </head>
 <body>
@@ -82,6 +93,7 @@
 
             <div class="exclusion-bar">
                 <div>• 퇴직금 산정일수 : <span id="finalWorkDaysSummary" class="calc-days-summary">0 일</span></div>
+                <button onclick="openModal()">제외일자 등록</button>
             </div>
 
             <table>
@@ -91,8 +103,8 @@
 
             <div class="bottom-flex-layout">
                 <div class="result-column">
-                    <div class="result-row"><label>연간 상여금</label><input type="text" id="annualBonus" value="0"> 원</div>
-                    <div class="result-row"><label>연차수당</label><input type="text" id="annualLeaveWage" value="0"> 원</div>
+                    <div class="result-row"><label>연간 상여금</label><input type="text" id="annualBonus" value="0" oninput="formatAndCalcWages(this)"> 원</div>
+                    <div class="result-row"><label>연차수당</label><input type="text" id="annualLeaveWage" value="0" oninput="formatAndCalcWages(this)"> 원</div>
                 </div>
                 <div class="result-column">
                     <div class="final-box"><label>최종 계산 퇴직금</label><input type="text" id="finalSeverance" value="0" readonly> 원</div>
@@ -108,11 +120,10 @@
 
     <script>
         function resetForm() {
-            // 사용자님이 요청하신 팝업창 코드입니다.
             if (confirm("입력 정보를 초기화하시겠습니까?")) {
                 document.querySelectorAll('input').forEach(input => {
                     if (input.type === 'checkbox') input.checked = false;
-                    else if (!input.classList.contains('readonly')) {
+                    else if (!input.classList.contains('readonly') && !input.readOnly) {
                         input.value = (input.id.includes('Pay') || input.id.includes('Bonus') || input.id.includes('Wage')) ? '0' : '';
                     }
                 });
@@ -120,6 +131,7 @@
                 if (tbody) tbody.innerHTML = '';
             }
         }
+        // 이 아래로 기존의 모든 계산 로직(calculateAll 등)을 그대로 붙여넣으시면 됩니다.
     </script>
 </body>
 </html>
