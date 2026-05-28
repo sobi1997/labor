@@ -6,105 +6,160 @@
     <title>노무법인 두웰 - 실무 계산기 통합 포털</title>
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Malgun Gothic', sans-serif; }
-        body { background-color: #f4f6f9; padding: 40px 20px; color: #333; }
+        body { background-color: #f4f6f9; padding: 50px 20px; color: #333; }
 
         .container {
-            max-width: 650px;
+            max-width: 680px;
             margin: 0 auto;
             background: #fff;
             border: 1px solid #cfd8dc;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.06);
-            border-radius: 6px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.07);
+            border-radius: 8px;
             overflow: hidden;
             position: relative;
         }
 
+        /* 🟦 헤더 영역 아이콘 매핑 및 레이아웃 강화 */
         .launcher-header {
             background-color: #0d47a1;
             color: #fff;
-            padding: 35px 24px 28px 24px;
-            text-align: center;
+            padding: 40px 30px;
+            display: flex;
+            align-items: center;
+            gap: 20px;
         }
 
-        .launcher-header h1 {
-            font-size: 22px;
+        .header-icon {
+            fill: #90caf9;
+            width: 48px;
+            height: 48px;
+            flex-shrink: 0;
+        }
+
+        .header-text {
+            text-align: left;
+        }
+
+        .header-text h1 {
+            font-size: 24px;
             font-weight: bold;
             letter-spacing: -0.5px;
             margin-bottom: 6px;
         }
 
-        .launcher-header p {
+        .header-text p {
             font-size: 13px;
             color: #90caf9;
         }
 
         .launcher-body {
-            padding: 30px;
+            padding: 35px 30px;
         }
 
-        .menu-instruction {
-            font-size: 14px;
-            color: #64748b;
+        /* 💡 허전함을 채워줄 사내 공지 및 안내 박스 브릿지 */
+        .portal-notice-box {
+            background-color: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 6px;
+            padding: 15px 18px;
             margin-bottom: 25px;
-            text-align: center;
+            font-size: 13px;
+            color: #475569;
+            line-height: 1.6;
+        }
+        .portal-notice-box strong {
+            color: #0d47a1;
         }
 
         .btn-grid {
             display: flex;
             flex-direction: column;
-            gap: 12px;
+            gap: 14px;
         }
 
+        /* 🔘 내부 밀도를 높인 카드형 버튼 디자인 개조 */
         .btn-nav {
-            display: block;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
             width: 100%;
             text-decoration: none;
             background: #fff;
             border: 1px solid #cbd5e1;
-            padding: 16px 20px;
-            font-size: 15px;
-            font-weight: bold;
-            color: #1e293b;
-            border-radius: 5px;
-            text-align: left;
+            padding: 18px 20px;
+            border-radius: 6px;
             transition: all 0.15s ease-in-out;
             cursor: pointer;
             box-shadow: 0 1px 3px rgba(0,0,0,0.02);
-            position: relative;
         }
 
         .btn-nav:hover {
             background-color: #f8fafc;
             border-color: #2563eb;
-            color: #2563eb;
             transform: translateY(-1px);
-            box-shadow: 0 4px 6px rgba(37, 99, 235, 0.06);
+            box-shadow: 0 4px 12px rgba(37, 99, 235, 0.08);
         }
 
-        .btn-nav::after {
-            content: "→";
-            position: absolute;
-            right: 20px;
-            top: 50%;
-            transform: translateY(-50%);
-            color: #94a3b8;
+        .btn-content-left {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            text-align: left;
+        }
+
+        .btn-title-row {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-title {
+            font-size: 16px;
+            font-weight: bold;
+            color: #1e293b;
             transition: color 0.15s;
         }
-        .btn-nav:hover::after {
+        .btn-nav:hover .btn-title {
             color: #2563eb;
         }
 
-        /* ✒️ 하단 마감부 슬림화 및 크레딧 톤다운 개조 */
+        /* 🏷️ 분류 태그 배지 */
+        .btn-badge {
+            font-size: 11px;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-weight: bold;
+        }
+        .badge-law { background-color: #eff6ff; color: #2563eb; border: 1px solid #bfdbfe; }
+        .badge-calc { background-color: #f0fdf4; color: #16a34a; border: 1px solid #bbf7d0; }
+        .badge-std { background-color: #fbf7ff; color: #7c3aed; border: 1px solid #e9d5ff; }
+
+        .btn-desc {
+            font-size: 13px;
+            color: #64748b;
+            font-weight: normal;
+        }
+
+        .btn-arrow {
+            font-size: 18px;
+            color: #94a3b8;
+            transition: color 0.15s;
+            padding-left: 10px;
+        }
+        .btn-nav:hover .btn-arrow {
+            color: #2563eb;
+        }
+
         .footer-logo {
             text-align: right;
-            margin-top: 25px;
+            margin-top: 30px;
             border-top: 1px dashed #e2e8f0;
             padding-top: 15px;
         }
 
         .footer-logo .maker-credit {
             font-size: 11px;
-            color: #94a3b8; /* 눈에 띄지 않는 차분한 회색 */
+            color: #94a3b8;
             font-weight: normal;
         }
     </style>
@@ -114,24 +169,52 @@
     <div class="container">
 
         <div class="launcher-header">
-            <h1>노무 관리 계산기 모음</h1>
-            <p>노무법인 두웰 실무진 통합 서식 포털</p>
+            <svg class="header-icon" viewBox="0 0 24 24">
+                <path d="M12 7V3H2v18h20V7H12zM6 19H4v-2h2v2zm0-4H4v-2h2v2zm0-4H4V9h2v2zm0-4H4V5h2v2zm4 12H8v-2h2v2zm0-4H8v-2h2v2zm0-4H8V9h2v2zm0-4H8V5h2v2zm10 12h-8v-2h2v-2h-2v-2h2v-2h-2V9h8v10zm-2-8h-4v2h4v-2zm0 4h-4v2h4v-2z"/>
+            </svg>
+            <div class="header-text">
+                <h1>노무 관리 계산기 모음</h1>
+                <p>노무법인 두웰 실무진 통합 서식 포털</p>
+            </div>
         </div>
 
         <div class="launcher-body">
-            <p class="menu-instruction">필요한 산정 툴을 선택하시면 해당 계산기 화면으로 즉시 이동합니다.</p>
+            <div class="portal-notice-box">
+                <strong>[사내 안내]</strong> 본 포털은 노무법인 두웰 실무진의 신속한 자문 업무 지원을 위해 빌드되었습니다. 산정 서식을 선택하면 개별 연산 대시보드로 연결되며, 인쇄하기 실행 시 A4 맞춤형 법정 양식 출력이 가능합니다.
+            </div>
 
             <div class="btn-grid">
                 <a href="퇴직금계산.html" class="btn-nav">
-                    퇴직금 계산기 바로가기
+                    <div class="btn-content-left">
+                        <div class="btn-title-row">
+                            <span class="btn-title">퇴직금 계산기</span>
+                            <span class="btn-badge badge-law">법정</span>
+                        </div>
+                        <div class="btn-desc">평균임금 산정 및 재직일수 기반 법정 퇴직금 자동 추산</div>
+                    </div>
+                    <div class="btn-arrow">→</div>
                 </a>
 
                 <a href="퇴사자 4대보험정산.html" class="btn-nav">
-                    퇴사자 4대보험 정산 바로가기
+                    <div class="btn-content-left">
+                        <div class="btn-title-row">
+                            <span class="btn-title">퇴사자 4대보험 정산</span>
+                            <span class="btn-badge badge-calc">정산</span>
+                        </div>
+                        <div class="btn-desc">중도퇴사자 건강보험ㆍ국민연금 등 보험료 정산 연산 툴</div>
+                    </div>
+                    <div class="btn-arrow">→</div>
                 </a>
 
                 <a href="상시근로자수판단.html" class="btn-nav">
-                    상시근로자 수 산정 계산기 바로가기
+                    <div class="btn-content-left">
+                        <div class="btn-title-row">
+                            <span class="btn-title">상시근로자 수 산정 계산기</span>
+                            <span class="btn-badge badge-std">시행령</span>
+                        </div>
+                        <div class="btn-desc">실근무표 기준 가동일수 분할 및 5인 이상 여부 법리 판단</div>
+                    </div>
+                    <div class="btn-arrow">→</div>
                 </a>
             </div>
 
