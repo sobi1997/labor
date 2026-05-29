@@ -3,13 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>노무법인 두웰 - 실무 계산기 통합 포털</title>
+    <title>노무법인 두웰 - 실무 통합 포털</title>
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Malgun Gothic', sans-serif; }
-        body { background-color: #f4f6f9; padding: 50px 20px; color: #333; }
+        body { background-color: #f4f6f9; padding: 40px 20px; color: #333; }
 
         .container {
-            max-width: 680px;
+            max-width: 720px; /* 2열 배열을 위해 가로폭 미세 확장 */
             margin: 0 auto;
             background: #fff;
             border: 1px solid #cfd8dc;
@@ -19,11 +19,11 @@
             position: relative;
         }
 
-        /* 🟦 헤더 영역 아이콘 매핑 및 레이아웃 강화 */
+        /* 🟦 헤더 영역 */
         .launcher-header {
             background-color: #0d47a1;
             color: #fff;
-            padding: 40px 30px;
+            padding: 35px 30px;
             display: flex;
             align-items: center;
             gap: 20px;
@@ -31,8 +31,8 @@
 
         .header-icon {
             fill: #90caf9;
-            width: 48px;
-            height: 48px;
+            width: 44px;
+            height: 44px;
             flex-shrink: 0;
         }
 
@@ -41,10 +41,10 @@
         }
 
         .header-text h1 {
-            font-size: 24px;
+            font-size: 22px;
             font-weight: bold;
             letter-spacing: -0.5px;
-            margin-bottom: 6px;
+            margin-bottom: 4px;
         }
 
         .header-text p {
@@ -53,16 +53,16 @@
         }
 
         .launcher-body {
-            padding: 35px 30px;
+            padding: 30px 25px;
         }
 
-        /* 💡 허전함을 채워줄 사내 공지 및 안내 박스 브릿지 */
+        /* 사내 공지 및 안내 박스 */
         .portal-notice-box {
             background-color: #f8fafc;
             border: 1px solid #e2e8f0;
             border-radius: 6px;
-            padding: 15px 18px;
-            margin-bottom: 25px;
+            padding: 14px 16px;
+            margin-bottom: 30px;
             font-size: 13px;
             color: #475569;
             line-height: 1.6;
@@ -71,36 +71,62 @@
             color: #0d47a1;
         }
 
-        .btn-grid {
+        /* 📂 [신규] 섹션 타이틀 스타일 (구역 구분선) */
+        .section-container {
+            margin-bottom: 35px;
+        }
+
+        .section-title {
+            font-size: 16px;
+            font-weight: bold;
+            color: #0d47a1;
+            margin-bottom: 15px;
+            padding-left: 8px;
+            border-left: 4px solid #0d47a1;
             display: flex;
-            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+        }
+
+        /* 🎛️ [핵심 개조] 한 줄에 2개씩 배치되는 반응형 바둑판 그리드 */
+        .grid-2col {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
             gap: 14px;
         }
 
-        /* 🔘 내부 밀도를 높인 카드형 버튼 디자인 개조 */
-        .btn-nav {
+        /* 모바일 화면 스마트폰 대응 (화면이 너무 작아지면 자동으로 한 줄 처리) */
+        @media (max-width: 540px) {
+            .grid-2col {
+                grid-template-columns: 1fr;
+                gap: 12px;
+            }
+        }
+
+        /* 🔘 카드형 런처 버튼 디자인 */
+        .btn-card {
             display: flex;
-            align-items: center;
+            flex-direction: column;
             justify-content: space-between;
-            width: 100%;
             text-decoration: none;
             background: #fff;
             border: 1px solid #cbd5e1;
-            padding: 18px 20px;
+            padding: 18px;
             border-radius: 6px;
             transition: all 0.15s ease-in-out;
             cursor: pointer;
             box-shadow: 0 1px 3px rgba(0,0,0,0.02);
+            min-height: 120px; /* 높이 밸런스 균일화 */
         }
 
-        .btn-nav:hover {
+        .btn-card:hover {
             background-color: #f8fafc;
             border-color: #2563eb;
-            transform: translateY(-1px);
-            box-shadow: 0 4px 12px rgba(37, 99, 235, 0.08);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(37, 99, 235, 0.08);
         }
 
-        .btn-content-left {
+        .btn-content-top {
             display: flex;
             flex-direction: column;
             gap: 6px;
@@ -110,49 +136,52 @@
         .btn-title-row {
             display: flex;
             align-items: center;
+            justify-content: space-between; /* 타이틀과 배지를 양끝 배치 */
             gap: 8px;
+            margin-bottom: 2px;
         }
 
         .btn-title {
-            font-size: 16px;
+            font-size: 15px;
             font-weight: bold;
             color: #1e293b;
             transition: color 0.15s;
         }
-        .btn-nav:hover .btn-title {
+        .btn-card:hover .btn-title {
             color: #2563eb;
         }
 
-        /* 🏷️ 분류 태그 배지 */
+        /* 🏷️ 배지 스타일 */
         .btn-badge {
             font-size: 11px;
             padding: 2px 6px;
             border-radius: 3px;
             font-weight: bold;
+            flex-shrink: 0;
         }
-        .badge-law { background-color: #eff6ff; color: #2563eb; border: 1px solid #bfdbfe; }
-        .badge-calc { background-color: #f0fdf4; color: #16a34a; border: 1px solid #bbf7d0; }
-        .badge-std { background-color: #fbf7ff; color: #7c3aed; border: 1px solid #e9d5ff; }
+        /* 파란색 계산기 배지 */
+        .badge-calc { 
+            background-color: #eff6ff; 
+            color: #2563eb; 
+            border: 1px solid #bfdbfe; 
+        }
+        /* 회색 양식 배지 */
+        .badge-form { 
+            background-color: #f1f5f9; 
+            color: #475569; 
+            border: 1px solid #cbd5e1; 
+        }
 
         .btn-desc {
-            font-size: 13px;
+            font-size: 12.5px;
             color: #64748b;
             font-weight: normal;
-        }
-
-        .btn-arrow {
-            font-size: 18px;
-            color: #94a3b8;
-            transition: color 0.15s;
-            padding-left: 10px;
-        }
-        .btn-nav:hover .btn-arrow {
-            color: #2563eb;
+            line-height: 1.5;
         }
 
         .footer-logo {
             text-align: right;
-            margin-top: 30px;
+            margin-top: 20px;
             border-top: 1px dashed #e2e8f0;
             padding-top: 15px;
         }
@@ -173,49 +202,68 @@
                 <path d="M12 7V3H2v18h20V7H12zM6 19H4v-2h2v2zm0-4H4v-2h2v2zm0-4H4V9h2v2zm0-4H4V5h2v2zm4 12H8v-2h2v2zm0-4H8v-2h2v2zm0-4H8V9h2v2zm0-4H8V5h2v2zm10 12h-8v-2h2v-2h-2v-2h2v-2h-2V9h8v10zm-2-8h-4v2h4v-2zm0 4h-4v2h4v-2z"/>
             </svg>
             <div class="header-text">
-                <h1>노무 관리 계산기 모음</h1>
-                <p>노무법인 두웰 실무진 통합 서식 포털</p>
+                <h1>노무법인 두웰 - 실무 통합 포털</h1>
+                <p>계산기 프로그램 및 행정 서식 라이브러리</p>
             </div>
         </div>
 
         <div class="launcher-body">
             <div class="portal-notice-box">
-                <strong>[사내 안내]</strong> 본 포털은 노무법인 두웰 실무진의 신속한 자문 업무 지원을 위해 빌드되었습니다. 산정 서식을 선택하면 개별 연산 대시보드로 연결되며, 인쇄하기 실행 시 A4 맞춤형 법정 양식 출력이 가능합니다.
+                <strong>[운영 안내]</strong> 원하시는 실무 프로그램을 선택하시면 해당 링크로 즉시 연결됩니다. 양식이나 계산기가 추가될 경우 담당자에게 코드를 요청하시기 바랍니다.
             </div>
 
-            <div class="btn-grid">
-                <a href="퇴직금계산.html" class="btn-nav">
-                    <div class="btn-content-left">
-                        <div class="btn-title-row">
-                            <span class="btn-title">퇴직금 계산기</span>
-                            <span class="btn-badge badge-law">법정</span>
+            <div class="section-container">
+                <div class="section-title">📊 실무 연산 계산기</div>
+                <div class="grid-2col">
+                    
+                    <a href="퇴직금계산.html" class="btn-card">
+                        <div class="btn-content-top">
+                            <div class="btn-title-row">
+                                <span class="btn-title">퇴직금 계산기</span>
+                                <span class="btn-badge badge-calc">계산기</span>
+                            </div>
+                            <div class="btn-desc">평균임금 산정 및 재직일수 기반 법정 퇴직금 자동 추산</div>
                         </div>
-                        <div class="btn-desc">평균임금 산정 및 재직일수 기반 법정 퇴직금 자동 추산</div>
-                    </div>
-                    <div class="btn-arrow">→</div>
-                </a>
+                    </a>
 
-                <a href="퇴사자4대보험정산.html" class="btn-nav">
-                    <div class="btn-content-left">
-                        <div class="btn-title-row">
-                            <span class="btn-title">퇴사자 4대보험 정산</span>
-                            <span class="btn-badge badge-calc">정산</span>
+                    <a href="퇴사자4대보험정산.html" class="btn-card">
+                        <div class="btn-content-top">
+                            <div class="btn-title-row">
+                                <span class="btn-title">퇴사자 4대보험 정산</span>
+                                <span class="btn-badge badge-calc">계산기</span>
+                            </div>
+                            <div class="btn-desc">중도퇴사자 건강보험ㆍ국민연금 등 중도 정산 연산 툴</div>
                         </div>
-                        <div class="btn-desc">중도퇴사자 건강보험ㆍ국민연금 등 보험료 정산 연산 툴</div>
-                    </div>
-                    <div class="btn-arrow">→</div>
-                </a>
+                    </a>
 
-                <a href="상시근로자수판단.html" class="btn-nav">
-                    <div class="btn-content-left">
-                        <div class="btn-title-row">
-                            <span class="btn-title">상시근로자 수 산정 계산기</span>
-                            <span class="btn-badge badge-std">시행령</span>
+                    <a href="상시근로자수판단.html" class="btn-card">
+                        <div class="btn-content-top">
+                            <div class="btn-title-row">
+                                <span class="btn-title">상시근로자 수 계산기</span>
+                                <span class="btn-badge badge-calc">계산기</span>
+                            </div>
+                            <div class="btn-desc">실근무표 기준 가동일수 분할 및 5인 이상 여부 법리 판단</div>
                         </div>
-                        <div class="btn-desc">실근무표 기준 가동일수 분할 및 5인 이상 여부 법리 판단</div>
+                    </a>
+                    
                     </div>
-                    <div class="btn-arrow">→</div>
-                </a>
+            </div>
+
+            <div class="section-container">
+                <div class="section-title">📂 사내 실무 양식</div>
+                <div class="grid-2col">
+                    
+                    <a href="상담일지.html" class="btn-card">
+                        <div class="btn-content-top">
+                            <div class="btn-title-row">
+                                <span class="btn-title">상담일지 작성 양식</span>
+                                <span class="btn-badge badge-form">양식</span>
+                            </div>
+                            <div class="btn-desc">고객사 인바운드 상담 내역 기록 및 고화질 캡처 공유용 서식</div>
+                        </div>
+                    </a>
+
+                    </div>
             </div>
 
             <div class="footer-logo">
