@@ -36,7 +36,7 @@
             flex-shrink: 0;
         }
 
-        .header-text text-align: left;
+        .header-text { text-align: left; }
 
         .header-text h1 {
             font-size: 22px;
@@ -174,7 +174,6 @@
         .badge-calc { background-color: #eff6ff; color: #2563eb; border: 1px solid #bfdbfe; }
         .badge-template { background-color: #f0fdf4; color: #16a34a; border: 1px solid #bbf7d0; }
         .badge-form { background-color: #f1f5f9; color: #475569; border: 1px solid #cbd5e1; }
-        .badge-ready { background-color: #fff7ed; color: #ea580c; border: 1px solid #ffedd5; }
 
         .btn-desc {
             font-size: 12px;
@@ -213,7 +212,6 @@
 
     <div class="container">
 
-        <!-- 🟦 상단 대형 헤더 바 -->
         <div class="launcher-header">
             <svg class="header-icon" viewBox="0 0 24 24">
                 <path d="M12 7V3H2v18h20V7H12zM6 19H4v-2h2v2zm0-4H4v-2h2v2zm0-4H4V9h2v2zm0-4H4V5h2v2zm4 12H8v-2h2v2zm0-4H8v-2h2v2zm0-4H8V9h2v2zm0-4H8V5h2v2zm10 12h-8v-2h2v-2h-2v-2h2v-2h-2V9h8v10zm-2-8h-4v2h4v-2zm0 4h-4v2h4v-2z"/>
@@ -226,34 +224,14 @@
 
         <div class="launcher-body">
             
-            <!-- 공지사항 띠지 -->
             <div class="portal-notice-box">
-                <strong>[운영 안내]</strong> 원하시는 실무 대시보드를 선택하시면 링크로 즉시 연결됩니다. 신규 메일 템플릿(소득총액신고, 기초자료 요청)이 하단 시스템에 추가 완료되었습니다.
+                <strong>[운영 안내]</strong> 원하시는 실무 대시보드를 선택하시면 링크로 즉시 연결됩니다. 계산기, 템플릿 계속 추가중입니다.
             </div>
 
-            <!-- 🗂️ 메일 포털 좌우 2분할 대형 레이아웃 구성 -->
             <div class="portal-main-layout">
                 
-                <!-- ================= LEFT COLUMN ================= -->
                 <div class="layout-column">
                     
-                    <!-- ⚖️ 1. 노동 관계 법령 (좌측 상단 배치) -->
-                    <div class="section-container">
-                        <div class="section-title">⚖️ 노동 관계 법령 정보</div>
-                        <div class="grid-inside grid-full-width">
-                            <a href="#" class="btn-card" style="min-height: 80px; background-color: #fafafa; cursor: default;" onclick="return false;">
-                                <div class="btn-content-top">
-                                    <div class="btn-title-row">
-                                        <span class="btn-title" style="color: #94a3b8;">법령 라이브러리 준비 중</span>
-                                        <span class="btn-badge badge-ready">대기중</span>
-                                    </div>
-                                    <div class="btn-desc">최신 근로기준법 및 4대보험 관계 법령 데이터베이스 구축 중입니다.</div>
-                                </div>
-                            </a>
-                        </div>
-                    </div>
-
-                    <!-- 📊 2. 실무 연산 계산기 (좌측 하단 배치) -->
                     <div class="section-container">
                         <div class="section-title">📊 실무 연산 계산기</div>
                         <div class="grid-inside">
@@ -301,10 +279,8 @@
 
                 </div>
 
-                <!-- ================= RIGHT COLUMN ================= -->
                 <div class="layout-column">
                     
-                    <!-- ✉️ 3. 메일 템플릿 매니저 (우측 상단 배치 / 신규추가) -->
                     <div class="section-container">
                         <div class="section-title">✉️ 실무 안내 메일 템플릿</div>
                         <div class="grid-inside">
@@ -330,7 +306,6 @@
                         </div>
                     </div>
 
-                    <!-- 📂 4. 사내 실무 양식 (우측 하단 배치) -->
                     <div class="section-container">
                         <div class="section-title">📂 사내 실무 행정 양식</div>
                         <div class="grid-inside grid-full-width">
@@ -350,7 +325,6 @@
 
             </div>
 
-            <!-- 푸터 크레딧 -->
             <div class="footer-logo">
                 <span class="maker-credit">made by 전형섭</span>
             </div>
