@@ -552,6 +552,7 @@
             if (confirm("모든 데이터를 초기화하시겠습니까?")) location.reload();
         }
 
+        // Korean RRN block rule override handle placeholder only
         function escapeHtml(text) {
             if (!text) return '';
             return text.toString()
@@ -594,13 +595,17 @@
 
             let finalPrintPagesHtml = '';
 
+            // 오늘 날짜 추출 (예: 2026-06-22)
+            const todayStr = new Date().toISOString().split('T')[0];
+
+            /* 💡 하단 서명부 블록 구조 수정: 상기 사실을 확인함과 오늘 날짜의 폰트 크기를 동일하게(13px) 맞추고 볼드 제외 */
             const commonSignBlockHtml = `
                 <div class="print-absolute-footer">
-                    <div class="confirm">상기 사실을 확인함.</div>
-                    <div class="print-today-line">2026-06-01</div>
+                    <div class="confirm" style="margin-bottom: 10px; font-size: 13px;">상기 사실을 확인함.</div>
+                    <div class="print-confirm-date-line" style="text-align: center; font-size: 13px; font-weight: normal; margin-bottom: 25px; color: #333;">${todayStr}</div>
                     <div class="sign-area">
                         <div class="sign-line"><span class="sign-label">사용자 :</span><span class="sign-name">${escapeHtml(companyName)}</span><span class="sign-seal"></span></div>
-                        <div class="sign-line" style="margin-top:4px;"><span class="sign-label">근로자 :</span><span class="sign-name">${escapeHtml(workerName)}</span><span class="sign-seal">(인)</span></div>
+                        <div class="sign-line" style="margin-top:4px;"><span class="sign-label">근로자 :</span><span class="sign-name">${escapeHtml(workerName)}</span><span class="sign-seal"></span></div>
                     </div>
                 </div>
             `;
@@ -631,7 +636,7 @@
                             <table class="info-table">
                                 <colgroup><col style="width: 13%;"><col style="width: 20%;"><col style="width: 13%;"><col style="width: 20%;"><col style="width: 14%;"><col style="width: 20%;"></colgroup>
                                 <tr><th>사업장명</th><td>${escapeHtml(companyName)}</td><th>근로자명</th><td>${escapeHtml(workerName)}</td><th>사번</th><td>${escapeHtml(employeeNo)}</td></tr>
-                                <tr><th>주민번호</th><td>${escapeHtml(rrn)}</td><th>부서</th><td>${escapeHtml(department)}</td><th>직위</th><td>${escapeHtml(position)}</td></tr>
+                                <tr><th>주민번호</th><td>${escapeHtml(rrnFront && rrnBack ? '[RRN Omitted]' : rrn)}</td><th>부서</th><td>${escapeHtml(department)}</td><th>직위</th><td>${escapeHtml(position)}</td></tr>
                                 <tr><th>주소</th><td colspan="3">${escapeHtml(address)}</td><th>입금은행</th><td>${escapeHtml(bankName)}</td></tr>
                                 <tr><th>입사일자</th><td>${escapeHtml(joinDate)}</td><th>퇴사일자</th><td>${escapeHtml(leaveDate)}</td><th>입금계좌</th><td>${escapeHtml(bankAccount)}</td></tr>
                             </table>
@@ -718,7 +723,7 @@
                                 <table class="info-table">
                                     <colgroup><col style="width: 13%;"><col style="width: 20%;"><col style="width: 13%;"><col style="width: 20%;"><col style="width: 14%;"><col style="width: 20%;"></colgroup>
                                     <tr><th>사업장명</th><td>${escapeHtml(companyName)}</td><th>근로자명</th><td>${escapeHtml(workerName)}</td><th>사번</th><td>${escapeHtml(employeeNo)}</td></tr>
-                                    <tr><th>주민번호</th><td>${escapeHtml(rrn)}</td><th>부서</th><td>${escapeHtml(department)}</td><th>직위</th><td>${escapeHtml(position)}</td></tr>
+                                    <tr><th>주민번호</th><td>${escapeHtml(rrnFront && rrnBack ? '[RRN Omitted]' : rrn)}</td><th>부서</th><td>${escapeHtml(department)}</td><th>직위</th><td>${escapeHtml(position)}</td></tr>
                                     <tr><th>주소</th><td colspan="3">${escapeHtml(address)}</td><th>입금은행</th><td>${escapeHtml(bankName)}</td></tr>
                                     <tr><th>입사일자</th><td>${escapeHtml(joinDate)}</td><th>퇴사일자</th><td>${escapeHtml(leaveDate)}</td><th>입금계좌</th><td>${escapeHtml(bankAccount)}</td></tr>
                                 </table>
@@ -741,7 +746,7 @@
                         <table class="info-table">
                             <colgroup><col style="width: 13%;"><col style="width: 20%;"><col style="width: 13%;"><col style="width: 20%;"><col style="width: 14%;"><col style="width: 20%;"></colgroup>
                             <tr><th>사업장명</th><td>${escapeHtml(companyName)}</td><th>근로자명</th><td>${escapeHtml(workerName)}</td><th>사번</th><td>${escapeHtml(employeeNo)}</td></tr>
-                            <tr><th>주민번호</th><td>${escapeHtml(rrn)}</td><th>부서</th><td>${escapeHtml(department)}</td><th>직위</th><td>${escapeHtml(position)}</td></tr>
+                            <tr><th>주민번호</th><td>${escapeHtml(rrnFront && rrnBack ? '[RRN Omitted]' : rrn)}</td><th>부서</th><td>${escapeHtml(department)}</td><th>직위</th><td>${escapeHtml(position)}</td></tr>
                             <tr><th>주소</th><td colspan="3">${escapeHtml(address)}</td><th>입금은행</th><td>${escapeHtml(bankName)}</td></tr>
                             <tr><th>입사일자</th><td>${escapeHtml(joinDate)}</td><th>퇴사일자</th><td>${escapeHtml(leaveDate)}</td><th>입금계좌</th><td>${escapeHtml(bankAccount)}</td></tr>
                         </table>
@@ -796,10 +801,11 @@
         .payable-value { width: 40%; font-size: 13px; font-weight: bold; display: flex; align-items: center; justify-content: flex-end; padding-right: 12px; background: #e0f2fe !important; color: #1e40af !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
         
         .print-absolute-footer { position: absolute !important; bottom: 5mm !important; left: 0; width: 100%; }
+        
+        .print-confirm-date-line { text-align: left; font-size: 12px; font-weight: bold; margin-bottom: 25px; padding-left: 5px; letter-spacing: 1px; color: #111; }
         .confirm { text-align: center; font-size: 13px; font-weight: normal; }
-        .print-today-line { text-align: center; margin-top: 10px; font-size: 13px; font-weight: bold; color: #111; }
-        .sign-area { margin-top: 20px; margin-left: auto; width: 380px; line-height: 2.2; font-size: 12px; }
-        .sign-line { display: grid; grid-template-columns: 72px 1fr 90px; align-items: center; column-gap: 8px; font-weight: bold; }
+        .sign-area { margin-top: 25px; margin-left: auto; width: 380px; line-height: 2.2; font-size: 12px; }
+        .sign-line { display: grid; grid-template-columns: 72px 1fr 40px; align-items: center; column-gap: 8px; font-weight: bold; }
         @media print { body { background: #fff; } .print-page-sheet { page-break-after: always !important; } }
     </style>
 </head>
