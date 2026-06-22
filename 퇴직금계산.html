@@ -365,6 +365,7 @@
         function openModal() { document.getElementById('unincluded-modal').style.display = 'flex'; }
         function closeModal() { document.getElementById('unincluded-modal').style.display = 'none'; }
         
+        // 행추가
         function addModalRow() {
             const tbody = document.getElementById('modalTableBody'); const newRow = document.createElement('tr');
             newRow.innerHTML = `<td><input type="text" class="custom-flatpickr-input start-date" placeholder="날짜 선택"></td><td><input type="text" class="custom-flatpickr-input end-date" placeholder="날짜 선택"></td><td><button class="btn-row-del" onclick="deleteThisRow(this)">✕</button></td>`;
@@ -594,7 +595,9 @@
             document.getElementById('totalWageSum').value = numberWithCommas(Math.floor(totalWageSum));
             const periodDays = total3MonthDays;
             const avgWage = periodDays > 0 ? (totalWageSum / periodDays) : 0;
-            document.getElementById('avgWagePerDay').value = numberWithCommas(Math.floor(avgWage));
+            
+            // 1일 평균임금 소수점 무조건 올림(Math.ceil) 세팅
+            document.getElementById('avgWagePerDay').value = numberWithCommas(Math.ceil(avgWage));
             calcFinalSeverance();
             return avgWage;
         }
@@ -613,7 +616,6 @@
             document.getElementById('finalSeverance').value = numberWithCommas(Math.floor(finalTotal));
         }
 
-        /* 🛠️ [복원 매핑 가동]: 지난 턴 누락되었던 팝업 연동 코어 10대 함수 완전 적재 완료 */
         function getInputValue(id) {
             const el = document.getElementById(id);
             return el ? el.value.trim() : '';
@@ -627,6 +629,7 @@
             return `${y}-${String(m).padStart(2, '0')}-${String(d).padStart(2, '0')}`;
         }
 
+        /* 팝업 전용 유틸 매핑 가동 */
         function dotDateToDash(value) { return value ? value.replace(/\./g, '-') : ''; }
         function getNumberFromText(value) { return Number(String(value || '').replace(/[^0-9.-]/g, '') || 0); }
         function formatPrintWon(value, showZero = true) {
@@ -746,7 +749,6 @@
                 return `<th class="period-date-cell" style="white-space: nowrap; font-size: 11px; font-weight: normal; line-height: 1.45;">${escapeHtml(item.start)} 부터<br>${escapeHtml(item.end)} 까지</th>`;
             }).join('');
 
-            // [★주임님 피드백 반영 완료]: 타이틀 내부 지저분한 작은 따옴표를 전면 소멸 복구 완료
             const printHtml = `
 <!DOCTYPE html>
 <html lang="ko">
