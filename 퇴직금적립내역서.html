@@ -68,6 +68,12 @@
         th { background-color: #f8fafc; border: 1px solid #cbd5e1; padding: 12px; font-weight: bold; color: #1e293b; }
         td { border: 1px solid #cbd5e1; padding: 10px; background: white; }
         td input { width: 100%; padding: 6px; text-align: center; border: 1px solid #ccc; border-radius: 3px; }
+        
+        /* 기준금액 내부 분할 (메모 입력창의 크기와 테두리를 금액창과 통일) */
+        .base-wage-combo-cell { display: flex; gap: 8px; align-items: center; width: 100%; }
+        .base-wage-combo-cell .memo-input { text-align: left; background: #ffffff; color: #333333; font-weight: bold; border: 1px solid #ccc; font-size: 13px; flex: 1; }
+        .base-wage-combo-cell .right-money { text-align: right; font-weight: bold; flex: 2; font-size: 13px; }
+        
         td input.right-money { text-align: right; font-weight: bold; }
         
         /* 자동수식 잠금 연하늘색 스타일 */
@@ -334,7 +340,8 @@
                     period: formatPeriodString(periodStr),
                     yearGroup: foundYear,
                     base: baseWageNum,
-                    accum: targetAccum
+                    accum: targetAccum,
+                    memo: ''
                 });
             });
 
@@ -353,7 +360,7 @@
             let yearMap = {};
             globalRawLines.forEach(row => {
                 if(!yearMap[row.yearGroup]) {
-                    yearMap[row.yearGroup] = { base: 0, accum: 0 };
+                    yearMap[row.yearGroup] = { base: 0, accum: 0, memo: '' };
                 }
                 yearMap[row.yearGroup].base += row.base;
                 yearMap[row.yearGroup].accum += row.accum;
@@ -364,7 +371,8 @@
                 globalYearLines.push({
                     period: yearKey, 
                     base: yearMap[yearKey].base,
-                    accum: yearMap[yearKey].accum
+                    accum: yearMap[yearKey].accum,
+                    memo: '' 
                 });
             }
         }
@@ -463,11 +471,17 @@
             let tableContentHtml = '';
 
             filteredList.forEach((row, idx) => {
+                const currentMemo = row.memo || '';
                 if(currentViewMode === 'month') {
                     tableContentHtml += `
                         <tr>
                             <td><input type="text" id="printPeriod_${idx}" class="editable" value="${row.period}" oninput="syncLiveText(${idx}, 'month')"></td>
-                            <td><input type="text" class="right-money editable" id="printBase_${idx}" value="${numberWithCommas(row.base)}" oninput="recalcRowDirect(${idx}, 'month')"></td>
+                            <td>
+                                <div class="base-wage-combo-cell">
+                                    <input type="text" class="memo-input editable" id="printMemo_${idx}" value="${currentMemo}" placeholder="메모" oninput="syncMemoText(${idx}, 'month')">
+                                    <input type="text" class="right-money editable" id="printBase_${idx}" value="${numberWithCommas(row.base)}" oninput="recalcRowDirect(${idx}, 'month')">
+                                </div>
+                            </td>
                             <td><input type="text" class="right-money readonly" id="printAccum_${idx}" value="${numberWithCommas(row.accum)}" tabindex="-1" readonly></td>
                         </tr>
                     `;
@@ -475,7 +489,12 @@
                     tableContentHtml += `
                         <tr>
                             <td><input type="text" id="printPeriod_Y_${idx}" class="editable" value="${row.period}" oninput="syncLiveText(${idx}, 'year')"></td>
-                            <td><input type="text" class="right-money editable" id="printBase_Y_${idx}" value="${numberWithCommas(row.base)}" oninput="recalcRowDirect(${idx}, 'year')"></td>
+                            <td>
+                                <div class="base-wage-combo-cell">
+                                    <input type="text" class="memo-input editable" id="printMemo_Y_${idx}" value="${currentMemo}" placeholder="메모" oninput="syncMemoText(${idx}, 'year')">
+                                    <input type="text" class="right-money editable" id="printBase_Y_${idx}" value="${numberWithCommas(row.base)}" oninput="recalcRowDirect(${idx}, 'year')">
+                                </div>
+                            </td>
                             <td><input type="text" class="right-money readonly" id="printAccum_Y_${idx}" value="${numberWithCommas(row.accum)}" tabindex="-1" readonly></td>
                         </tr>
                     `;
@@ -505,6 +524,16 @@
                 filteredList[idx].period = document.getElementById(`printPeriod_${idx}`).value;
             } else {
                 filteredList[idx].period = document.getElementById(`printPeriod_Y_${idx}`).value;
+            }
+        }
+
+        function syncMemoText(idx, mode) {
+            let filteredList = getFilteredData();
+            if(!filteredList[idx]) return;
+            if(mode === 'month') {
+                filteredList[idx].memo = document.getElementById(`printMemo_${idx}`).value;
+            } else {
+                filteredList[idx].memo = document.getElementById(`printMemo_Y_${idx}`).value;
             }
         }
 
@@ -552,7 +581,6 @@
             if (confirm("모든 데이터를 초기화하시겠습니까?")) location.reload();
         }
 
-        // Korean RRN block rule override handle placeholder only
         function escapeHtml(text) {
             if (!text) return '';
             return text.toString()
@@ -594,11 +622,8 @@
             }
 
             let finalPrintPagesHtml = '';
-
-            // 오늘 날짜 추출 (예: 2026-06-22)
             const todayStr = new Date().toISOString().split('T')[0];
 
-            /* 💡 하단 서명부 블록 구조 수정: 상기 사실을 확인함과 오늘 날짜의 폰트 크기를 동일하게(13px) 맞추고 볼드 제외 */
             const commonSignBlockHtml = `
                 <div class="print-absolute-footer">
                     <div class="confirm" style="margin-bottom: 10px; font-size: 13px;">상기 사실을 확인함.</div>
@@ -617,7 +642,7 @@
                 filteredList.forEach((row) => {
                     let yKey = row.yearGroup;
                     if(!dataByYear[yKey]) dataByYear[yKey] = [];
-                    dataByYear[yKey].push({ p: row.period, b: numberWithCommas(row.base), a: numberWithCommas(row.accum) });
+                    dataByYear[yKey].push({ p: row.period, b: numberWithCommas(row.base), a: numberWithCommas(row.accum), m: row.memo || '' });
                 });
 
                 let uniqueYears = Object.keys(dataByYear).sort();
@@ -626,7 +651,8 @@
                     let trsHtml = '';
                     uniqueYears.forEach(yKey => {
                         dataByYear[yKey].forEach(row => {
-                            trsHtml += `<tr><td>${escapeHtml(row.p)}</td><td class="right">${escapeHtml(row.b)}</td><td class="right bold-accum">${escapeHtml(row.a)}</td></tr>`;
+                            let memoSpan = row.m ? `<span class="print-memo-tag">${escapeHtml(row.m)}&nbsp;&nbsp;&nbsp;</span>` : '';
+                            trsHtml += `<tr><td>${escapeHtml(row.p)}</td><td class="right">${memoSpan}${escapeHtml(row.b)}</td><td class="right bold-accum">${escapeHtml(row.a)}</td></tr>`;
                         });
                     });
 
@@ -677,11 +703,14 @@
 
                         let trsHtml = '';
                         for(let i=0; i<12; i++) {
-                            let l = leftData[i] ? leftData[i] : { p: '', b: '', a: '' };
-                            let r = rightData[i] ? rightData[i] : { p: '', b: '', a: '' };
+                            let l = leftData[i] ? leftData[i] : { p: '', b: '', a: '', m: '' };
+                            let r = rightData[i] ? rightData[i] : { p: '', b: '', a: '', m: '' };
 
-                            let lCell = l.p ? `<td>${escapeHtml(l.p)}</td><td class="right">${escapeHtml(l.b)}</td><td class="right bold-accum">${escapeHtml(l.a)}</td>` : `<td></td><td></td><td></td>`;
-                            let rCell = r.p ? `<td>${escapeHtml(r.p)}</td><td class="right">${escapeHtml(r.b)}</td><td class="right bold-accum">${escapeHtml(r.a)}</td>` : `<td></td><td></td><td></td>`;
+                            let lMemoSpan = l.m ? `<span class="print-memo-tag">${escapeHtml(l.m)}&nbsp;&nbsp;&nbsp;</span>` : '';
+                            let rMemoSpan = r.m ? `<span class="print-memo-tag">${escapeHtml(r.m)}&nbsp;&nbsp;&nbsp;</span>` : '';
+
+                            let lCell = l.p ? `<td>${escapeHtml(l.p)}</td><td class="right">${lMemoSpan}${escapeHtml(l.b)}</td><td class="right bold-accum">${escapeHtml(l.a)}</td>` : `<td></td><td></td><td></td>`;
+                            let rCell = r.p ? `<td>${escapeHtml(r.p)}</td><td class="right">${rMemoSpan}${escapeHtml(r.b)}</td><td class="right bold-accum">${escapeHtml(r.a)}</td>` : `<td></td><td></td><td></td>`;
                             
                             trsHtml += `<tr style="height: 28px !important;">${lCell}${rCell}</tr>`;
                         }
@@ -737,7 +766,8 @@
             } else {
                 let rowsYearHtml = '';
                 filteredList.forEach((row) => {
-                    rowsYearHtml += `<tr style="height: 30px;"><td>${escapeHtml(row.period)}</td><td class="right">${numberWithCommas(row.base)}</td><td class="right bold-accum">${numberWithCommas(row.accum)}</td></tr>`;
+                    let memoSpan = row.memo ? `<span class="print-memo-tag">${escapeHtml(row.memo)}&nbsp;&nbsp;&nbsp;</span>` : '';
+                    rowsYearHtml += `<tr style="height: 30px;"><td>${escapeHtml(row.period)}</td><td class="right">${memoSpan}${numberWithCommas(row.base)}</td><td class="right bold-accum">${numberWithCommas(row.accum)}</td></tr>`;
                 });
 
                 finalPrintPagesHtml = `
@@ -793,6 +823,9 @@
         
         .right { text-align: right !important; padding-right: 8px !important; }
         .bold-accum { font-weight: bold !important; }
+        
+        /* 인쇄 시 메모 항목 스타일 (단정한 검은색 계열) */
+        .print-memo-tag { float: left; font-size: 10.5px; color: #333333; font-weight: bold; margin-left: 2px; }
         
         .print-total-row, .print-total-row td { background-color: #fcfdfe !important; font-weight: bold !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
         
