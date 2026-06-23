@@ -69,10 +69,10 @@
         td { border: 1px solid #cbd5e1; padding: 10px; background: white; }
         td input { width: 100%; padding: 6px; text-align: center; border: 1px solid #ccc; border-radius: 3px; }
         
-        /* 기준금액 내부 분할 (메모 입력창의 크기와 테두리를 금액창과 통일) */
+        /* 기준금액 내부 분할 레이아웃 (노란색 입력 배경 유지 및 분리) */
         .base-wage-combo-cell { display: flex; gap: 8px; align-items: center; width: 100%; }
-        .base-wage-combo-cell .memo-input { text-align: left; background: #ffffff; color: #333333; font-weight: bold; border: 1px solid #ccc; font-size: 13px; flex: 1; }
-        .base-wage-combo-cell .right-money { text-align: right; font-weight: bold; flex: 2; font-size: 13px; }
+        .base-wage-combo-cell .memo-input { text-align: left; font-weight: bold; flex: 1; }
+        .base-wage-combo-cell .right-money { text-align: right; font-weight: bold; flex: 2; }
         
         td input.right-money { text-align: right; font-weight: bold; }
         
@@ -478,7 +478,7 @@
                             <td><input type="text" id="printPeriod_${idx}" class="editable" value="${row.period}" oninput="syncLiveText(${idx}, 'month')"></td>
                             <td>
                                 <div class="base-wage-combo-cell">
-                                    <input type="text" class="memo-input editable" id="printMemo_${idx}" value="${currentMemo}" placeholder="메모" oninput="syncMemoText(${idx}, 'month')">
+                                    <input type="text" class="memo-input editable" id="printMemo_${idx}" value="${currentMemo}" placeholder="메모 입력" oninput="syncMemoText(${idx}, 'month')">
                                     <input type="text" class="right-money editable" id="printBase_${idx}" value="${numberWithCommas(row.base)}" oninput="recalcRowDirect(${idx}, 'month')">
                                 </div>
                             </td>
@@ -491,7 +491,7 @@
                             <td><input type="text" id="printPeriod_Y_${idx}" class="editable" value="${row.period}" oninput="syncLiveText(${idx}, 'year')"></td>
                             <td>
                                 <div class="base-wage-combo-cell">
-                                    <input type="text" class="memo-input editable" id="printMemo_Y_${idx}" value="${currentMemo}" placeholder="메모" oninput="syncMemoText(${idx}, 'year')">
+                                    <input type="text" class="memo-input editable" id="printMemo_Y_${idx}" value="${currentMemo}" placeholder="메모 입력" oninput="syncMemoText(${idx}, 'year')">
                                     <input type="text" class="right-money editable" id="printBase_Y_${idx}" value="${numberWithCommas(row.base)}" oninput="recalcRowDirect(${idx}, 'year')">
                                 </div>
                             </td>
@@ -824,8 +824,8 @@
         .right { text-align: right !important; padding-right: 8px !important; }
         .bold-accum { font-weight: bold !important; }
         
-        /* 인쇄 시 메모 항목 스타일 (단정한 검은색 계열) */
-        .print-memo-tag { float: left; font-size: 10.5px; color: #333333; font-weight: bold; margin-left: 2px; }
+        /* 인쇄 시 메모 항목 스타일 (산정기간 글꼴 'Malgun Gothic' 속성과 완벽 통일) */
+        .print-memo-tag { float: left; font-family: 'Malgun Gothic', '맑은 고딕', sans-serif; font-size: 10.5px; color: #333333; font-weight: normal; margin-left: 2px; }
         
         .print-total-row, .print-total-row td { background-color: #fcfdfe !important; font-weight: bold !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
         
