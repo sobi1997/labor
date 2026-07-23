@@ -52,9 +52,12 @@
 
     커밋 11 (2026-07-23)
     - 복사 차단 방식을 버튼 색 변경에서 실제 경고창(모달 팝업)으로 변경 — 어떤 항목이 비어 있는지 목록으로 보여주고 "확인"을 눌러야 닫힘
+
+    커밋 12 (2026-07-23)
+    - 경고창 레이아웃 수정: 미입력 목록이 짧을 때 "확인" 버튼이 목록 옆으로 붙던 문제 → 목록을 항상 전체 폭으로 채워 버튼이 목록 아래쪽에 오도록 수정
     -->
     <meta charset="UTF-8">
-    <title>노무법인 두웰 - 건강보험 연말정산 분할납부 신청여부 확인 메일 매니저 V1.11</title>
+    <title>노무법인 두웰 - 건강보험 연말정산 분할납부 신청여부 확인 메일 매니저 V1.12</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700&display=swap" rel="stylesheet">
@@ -124,7 +127,7 @@
         .modal-icon { font-size: 32px; margin-bottom: 8px; line-height: 1; }
         .modal-title { font-weight: 700; font-size: 16px; color: #1e293b; margin-bottom: 6px; }
         .modal-desc { font-size: 13px; color: #64748b; margin-bottom: 14px; line-height: 1.5; }
-        .modal-list { list-style: none; padding: 0; margin: 0 auto 20px; text-align: left; display: inline-block; }
+        .modal-list { list-style: none; padding: 0; margin: 0 0 20px; text-align: left; display: block; }
         .modal-list li { font-size: 13.5px; color: #ef4444; font-weight: 700; padding: 3px 0; }
         .modal-list li::before { content: "• "; }
         .modal-close-btn { background: var(--primary-color); color: #ffffff; border: none; padding: 10px 26px; border-radius: 6px; font-weight: 600; font-size: 14px; cursor: pointer; }
